@@ -192,6 +192,13 @@
     }
 
     questionMark.addEventListener('click', showRandomPhrase);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch(e => {
+        console.warn('Autoplay was blocked. User interaction required.', e);
+      });
+    });
   </script>
 </body>
 </html>
