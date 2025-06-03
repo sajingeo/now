@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>What is Sajin Doing Now?</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+    body {
+      background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+      background-size: cover;
+      color: #f1f1f1;
+      font-family: 'Comic Neue', cursive;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      background: url('https://www.transparenttextures.com/patterns/stardust.png');
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      background: -webkit-linear-gradient(#00d2ff, #3a7bd5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      z-index: 1;
+    }
+
+    #question-mark {
+      font-size: 6rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      color: #00f0ff;
+      text-shadow: 2px 2px 10px #000;
+      animation: spin-glow 3s infinite ease-in-out;
+      z-index: 1;
+    }
+
+    @keyframes spin-glow {
+      0%, 100% { transform: scale(1); text-shadow: 0 0 10px #0ff; }
+      50% { transform: scale(1.2) rotate(10deg); text-shadow: 0 0 20px #0ff; }
+    }
+
+    #question-mark:hover {
+      transform: scale(1.4) rotate(12deg);
+    }
+
+    #answer {
+      margin-top: 2rem;
+      font-size: 1.7rem;
+      text-align: center;
+      max-width: 80%;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.5);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+      z-index: 1;
+    }
+
+    #answer.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      display: flex;
+      gap: 20px;
+      z-index: 1;
+    }
+
+    button {
+      font-family: 'Comic Neue', cursive;
+      background-color: #3a7bd5;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #00d2ff;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>What is Sajin doing now?</h1>
+  <div id="question-mark">❓</div>
+  <div id="answer"></div>
+  <div id="controls">
+    <button onclick="toggleMusic()">Toggle Music 🎵</button>
+    <button onclick="surpriseMe()">Why is Sajin not answering! ✨</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <audio id="popSound" src="pop-music.wav" preload="auto"></audio>
+  <audio id="bgMusic" src="bg-music.wav" loop preload="auto"></audio>
+
+  <script>
+    const phrases = [
+      "Sajin is on his way to Mars 🚀",
+      "Sajin is debugging the matrix 🧠",
+      "Sajin is learning how to make tacos 🌮",
+      "Sajin is training an AI to do his laundry 🧺",
+      "Sajin is battling rubber ducks in code combat 🦆",
+      "Sajin is developing a sarcasm detector (it keeps crashing) 🤖",
+      "Sajin is teaching cats to code 🐈‍💻",
+      "Sajin is stuck in an infinite loop of creativity 🔁",
+      "Sajin is creating a blockchain for snacks 🍪",
+      "Sajin is reverse-engineering alien technology 👽",
+      "Sajin is meditating with space monks 🧘‍♂️🛸",
+      "Sajin is attending a cosmic hackathon 🌌👨‍💻",
+      "Sajin is racing asteroids 🪐💨",
+      "Sajin is beta testing teleportation glitches 🌀",
+      "Sajin is collaborating with time travelers ⏳",
+      "Sajin is trying to pet Schrödinger's cat 🐾",
+      "Sajin is remixing beats with alien DJs 🎧🛸",
+      "Sajin is debugging a black hole 🕳️🐞",
+      "Sajin is on hold with intergalactic tech support 📞",
+      "Sajin is building a spaceship with Legos 🧱🚀",
+      "Sajin is moderating a wormhole forum 🌠",
+      "Sajin is mining moon cheese 🧀🌕",
+      "Sajin is decoding Morse code from Jupiter 📡",
+      "Sajin is stargazing with quantum glasses 🔭🧬",
+      "Sajin is learning Klingon for fun 🖖"
+    ];
+
+    const questionMark = document.getElementById('question-mark');
+    const answer = document.getElementById('answer');
+    const popSound = document.getElementById('popSound');
+    const bgMusic = document.getElementById('bgMusic');
+
+    function launchConfetti() {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        emojis: ['🚀','🌌','👽','🛸','💫','✨','🔭','🪐','🌠','🎇']
+      });
+    }
+
+    function showRandomPhrase() {
+      const randomIndex = Math.floor(Math.random() * phrases.length);
+      answer.textContent = phrases[randomIndex];
+      answer.classList.remove('show');
+      void answer.offsetWidth;
+      answer.classList.add('show');
+      popSound.currentTime = 0;
+      popSound.play();
+      launchConfetti();
+    }
+
+    function toggleMusic() {
+      if (bgMusic.paused) {
+        bgMusic.play();
+      } else {
+        bgMusic.pause();
+      }
+    }
+
+    function surpriseMe() {
+      showRandomPhrase();
+      setTimeout(() => {
+        alert('BOO! 👻 Just kidding, Sajin is fine.');
+      }, 1200);
+    }
+
+    questionMark.addEventListener('click', showRandomPhrase);
+  </script>
+</body>
+</html>
