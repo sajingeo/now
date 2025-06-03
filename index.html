@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>What is Sajin Doing Now?</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+    :root {
+      --base-font-size: 16px;
+      --h1-size: 2.5rem;
+      --question-mark-size: 5rem;
+      --answer-font-size: 1.5rem;
+      --button-font-size: 1rem;
+      --button-padding: 10px 20px;
+    }
 
     body {
       background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
@@ -15,16 +25,17 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
-      overflow: hidden;
+      padding: 1rem;
+      box-sizing: border-box;
       position: relative;
     }
 
     body::before {
       content: '';
       background: url('https://www.transparenttextures.com/patterns/stardust.png');
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       right: 0;
@@ -34,23 +45,27 @@
     }
 
     h1 {
-      font-size: 3rem;
+      font-size: var(--h1-size);
       margin-bottom: 1rem;
       text-align: center;
       background: -webkit-linear-gradient(#00d2ff, #3a7bd5);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       z-index: 1;
+      padding: 0 1rem;
+      word-wrap: break-word;
     }
 
     #question-mark {
-      font-size: 6rem;
+      font-size: var(--question-mark-size);
       cursor: pointer;
       transition: transform 0.3s ease;
       color: #00f0ff;
       text-shadow: 2px 2px 10px #000;
       animation: spin-glow 3s infinite ease-in-out;
       z-index: 1;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     @keyframes spin-glow {
@@ -58,15 +73,17 @@
       50% { transform: scale(1.2) rotate(10deg); text-shadow: 0 0 20px #0ff; }
     }
 
-    #question-mark:hover {
+    #question-mark:hover,
+    #question-mark:active {
       transform: scale(1.4) rotate(12deg);
     }
 
     #answer {
       margin-top: 2rem;
-      font-size: 1.7rem;
+      font-size: var(--answer-font-size);
       text-align: center;
-      max-width: 80%;
+      width: 90%;
+      max-width: 600px;
       padding: 1rem;
       background: rgba(0, 0, 0, 0.7);
       border-radius: 20px;
@@ -75,6 +92,7 @@
       transform: translateY(20px);
       transition: all 0.5s ease;
       z-index: 1;
+      word-wrap: break-word;
     }
 
     #answer.show {
@@ -83,29 +101,91 @@
     }
 
     #controls {
-      position: absolute;
+      position: fixed;
       bottom: 20px;
       display: flex;
-      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
       z-index: 1;
+      padding: 0 1rem;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     button {
       font-family: 'Comic Neue', cursive;
       background-color: #3a7bd5;
       border: none;
-      padding: 10px 20px;
-      font-size: 1rem;
+      padding: var(--button-padding);
+      font-size: var(--button-font-size);
       border-radius: 12px;
       cursor: pointer;
       color: white;
       box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
       transition: background-color 0.3s ease, transform 0.2s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      min-width: 44px;
+      min-height: 44px;
     }
 
-    button:hover {
+    button:hover,
+    button:active {
       background-color: #00d2ff;
       transform: scale(1.1);
+    }
+
+    /* Media Queries for Responsive Design */
+    @media (max-width: 768px) {
+      :root {
+        --h1-size: 2rem;
+        --question-mark-size: 4rem;
+        --answer-font-size: 1.2rem;
+        --button-font-size: 0.9rem;
+        --button-padding: 8px 16px;
+      }
+
+      #controls {
+        bottom: 10px;
+        gap: 8px;
+      }
+
+      #answer {
+        width: 95%;
+        padding: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      :root {
+        --h1-size: 1.8rem;
+        --question-mark-size: 3.5rem;
+        --answer-font-size: 1.1rem;
+        --button-font-size: 0.8rem;
+        --button-padding: 8px 12px;
+      }
+
+      body {
+        padding: 0.5rem;
+      }
+
+      #controls {
+        padding: 0 0.5rem;
+      }
+
+      #answer {
+        margin-top: 1.5rem;
+        padding: 0.6rem;
+      }
+    }
+
+    /* Prevent text selection on interactive elements */
+    button, #question-mark {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
   </style>
 </head>
@@ -157,9 +237,10 @@
     const bgMusic = document.getElementById('bgMusic');
 
     function launchConfetti() {
+      const isMobile = window.innerWidth <= 768;
       confetti({
-        particleCount: 150,
-        spread: 70,
+        particleCount: isMobile ? 75 : 150,
+        spread: isMobile ? 50 : 70,
         origin: { y: 0.6 },
         emojis: ['🚀','🌌','👽','🛸','💫','✨','🔭','🪐','🌠','🎇']
       });
@@ -172,13 +253,13 @@
       void answer.offsetWidth;
       answer.classList.add('show');
       popSound.currentTime = 0;
-      popSound.play();
+      popSound.play().catch(e => console.warn('Audio playback failed:', e));
       launchConfetti();
     }
 
     function toggleMusic() {
       if (bgMusic.paused) {
-        bgMusic.play();
+        bgMusic.play().catch(e => console.warn('Music playback failed:', e));
       } else {
         bgMusic.pause();
       }
@@ -191,13 +272,32 @@
       }, 1200);
     }
 
-    questionMark.addEventListener('click', showRandomPhrase);
+    // Add both click and touch events with debouncing
+    let lastTap = 0;
+    questionMark.addEventListener('click', (e) => {
+      e.preventDefault();
+      showRandomPhrase();
+    });
+    
+    questionMark.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      if (tapLength < 500 && tapLength > 0) {
+        return;
+      }
+      lastTap = currentTime;
+      showRandomPhrase();
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
       bgMusic.volume = 0.5;
-      bgMusic.play().catch(e => {
-        console.warn('Autoplay was blocked. User interaction required.', e);
-      });
+      // Don't autoplay on mobile devices
+      if (!('ontouchstart' in window)) {
+        bgMusic.play().catch(e => {
+          console.warn('Autoplay was blocked. User interaction required.', e);
+        });
+      }
     });
   </script>
 </body>
